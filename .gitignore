@@ -1,0 +1,54 @@
+# --- Node / React ---
+node_modules/
+build/
+dist/
+.npm/
+.yarn/
+yarn-error.log
+package-lock.json
+.pnpm-debug.log
+
+# --- Go ---
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.a
+*.db
+
+# Compiled app
+app
+*.log
+
+# Go workspace / tooling
+bin/
+vendor/
+*.coverprofile
+coverage.out
+
+# --- Environment / Config ---
+.env
+.env.*
+!.env.example
+
+# --- IDEs / Editors ---
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# --- Misc ---
+*.tmp
+*.bak
+
+# --- Frontend build cache ---
+.cache/
+.next/
+out/
+coverage/

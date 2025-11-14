@@ -1,0 +1,173 @@
+openapi: 3.0.3
+info:
+  title: Auth API
+  version: 1.0.0
+  description: Authentication API with signup, signin, and session management
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /api/auth/signup:
+    post:
+      summary: Create a new account
+      operationId: signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '200':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid request
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/auth/signin:
+    post:
+      summary: Sign in to an existing account
+      operationId: signin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+      responses:
+        '200':
+          description: Signed in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session token cookie
+        '401':
+          description: Invalid credentials
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/auth/signout:
+    post:
+      summary: Sign out of the current session
+      operationId: signout
+      responses:
+        '200':
+          description: Signed out successfully
+
+  /api/me:
+    get:
+      summary: Get current user account
+      operationId: getMe
+      responses:
+        '200':
+          description: Current user account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '401':
+          description: Not authenticated
+
+  /api/session:
+    get:
+      summary: Get current session info
+      operationId: getSession
+      responses:
+        '200':
+          description: Current session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Not authenticated
+
+components:
+  schemas:
+
+    SignupRequest:
+      type: object
+      required: [Email, Password]
+      properties:
+        Email:
+          type: string
+          format: email
+          example: user@example.com
+        Password:
+          type: string
+          minLength: 8
+          example: MyP@ssw0rd
+
+    SigninRequest:
+      type: object
+      required: [Email, Password]
+      properties:
+        Email:
+          type: string
+          format: email
+          example: user@example.com
+        Password:
+          type: string
+          example: MyP@ssw0rd
+
+    AuthResponse:
+      type: object
+      required: [Message, Account]
+      properties:
+        Message:
+          type: string
+          example: Account created successfully
+        Account:
+          $ref: '#/components/schemas/Account'
+
+    Account:
+      type: object
+      required: [ID, Email, CreatedAt, PasswordHash]
+      properties:
+        ID:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        Email:
+          type: string
+          format: email
+          example: user@example.com
+        CreatedAt:
+          type: string
+          format: date-time
+          example: 2024-01-15T10:30:00Z
+        PasswordHash:
+          type: string
+          example: $2a$10$abcdefgHashedPassword
+
+    Session:
+      type: object
+      required: [Token, AccountID, ExpiresAt]
+      properties:
+        Token:
+          type: string
+          example: abc123def456
+        AccountID:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        ExpiresAt:
+          type: string
+          format: date-time
+          example: 2024-01-16T10:30:00Z
